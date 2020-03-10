@@ -412,10 +412,12 @@ export default createComponent({
       }
 
       if (this.enableResetCallBack) {
-        this.$emit('sku-selected-reset', {
-          selectedSku: this.selectedSku,
-          selectedProp: this.selectedProp,
-          selectedSkuComb: this.selectedSkuComb,
+        this.$nextTick(() => {
+          this.$emit('sku-selected-reset', {
+            selectedSku: this.selectedSku,
+            selectedProp: this.selectedProp,
+            selectedSkuComb: this.selectedSkuComb,
+          });
         });
       }
     },
