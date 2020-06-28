@@ -69,15 +69,28 @@ export default createComponent({
     genContent() {
       const nodes = this.slots();
 
+      // 大图模式下，展示顺序特殊，如下
+      // 1  2  3  7  8  9
+      // 4  5  6  10
       if (this.item.largeImageMode) {
-        const middle = Math.ceil(nodes.length / 2);
+        const firstLineNodes = [];
+        const secondLineNodes = [];
+        (nodes || []).forEach((node, index) => {
+          if (parseInt(index / 3, 10) % 2 === 0) {
+            firstLineNodes.push(node);
+          } else {
+            secondLineNodes.push(node);
+          }
+        });
 
         return (
           <div class={bem('scroller')} ref="scroller">
             <div class={bem('row')} ref="row">
-              {nodes.slice(0, middle)}
+              {firstLineNodes}
             </div>
-            <div class={bem('row')}>{nodes.slice(middle, nodes.length)}</div>
+            {secondLineNodes.length > 0 && (
+              <div class={bem('row')}>{secondLineNodes}</div>
+            )}
           </div>
         );
       }
