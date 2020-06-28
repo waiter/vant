@@ -366,11 +366,21 @@ export default createComponent({
     // @exposed-api
     resetSelectedSku() {
       this.selectedSku = {};
+      this.initBigItemPos = {};
 
       // 重置 selectedSku
       this.skuTree.forEach((item) => {
         this.selectedSku[item.k_s] =
           this.initialSku[item.k_s] || UNSELECTED_SKU_VALUE_ID;
+        this.initBigItemPos[item.k_s] = 0;
+        if (item.large_picture_preview && this.selectedSku[item.k_s]) {
+          const index = item.v.findIndex(
+            (v) => v.id === this.selectedSku[item.k_s]
+          );
+          if (index > 5) {
+            this.initBigItemPos[item.k_s] = parseInt(index / 6, 10) * 336;
+          }
+        }
       });
 
       // 只有一个 sku 规格值时默认选中
@@ -619,6 +629,7 @@ export default createComponent({
       stepperTitle,
       selectedSkuComb,
       showHeaderImage,
+      initBigItemPos,
     } = this;
 
     const slotsProps = {
@@ -679,6 +690,7 @@ export default createComponent({
               skuRow={skuTreeItem}
               largePicturePreview={skuTreeItem.large_picture_preview}
               hasScrollTab={skuTreeItem.v.length > 6}
+              initScrollLeft={initBigItemPos[skuTreeItem.k_s]}
             >
               {skuTreeItem.v.map((skuValue, itemIndex) => (
                 <template

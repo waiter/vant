@@ -14,6 +14,9 @@ export default createComponent({
 
       if (!this.scrollCon) {
         this.scrollCon = this.$refs.skuContent;
+        if (this.initScrollLeft) {
+          this.scrollCon.scrollLeft = this.initScrollLeft;
+        }
       }
 
       bind(this.scrollCon, 'scroll', this.onScroll);
@@ -29,13 +32,16 @@ export default createComponent({
       type: Boolean,
       default: false,
     },
+    initScrollLeft: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
       present: 0,
       contentWidth: 0,
       contentItemWidth: 0,
-      scrollLeft: 0,
     };
   },
   computed: {
@@ -49,6 +55,15 @@ export default createComponent({
       };
     },
   },
+  watch: {
+    initScrollLeft(val) {
+      this.moveScrollLeft(val);
+      // 兜底
+      setTimeout(() => {
+        this.moveScrollLeft(val);
+      }, 300);
+    },
+  },
   methods: {
     onScroll() {
       this.$nextTick(() => {
@@ -57,6 +72,11 @@ export default createComponent({
         const distance = contentItemWidth - contentWidth;
         this.present = this.scrollCon.scrollLeft / distance;
       });
+    },
+    moveScrollLeft(val) {
+      if (this.scrollCon) {
+        this.scrollCon.scrollLeft = val;
+      }
     },
   },
   render() {
